@@ -12,8 +12,8 @@ import { RtStrategy } from './strategies/rt.strategy';
   imports: [
     UserModule,
     JwtModule.register({
-      secret: `${process.env.jwt_secret}`,
-      signOptions: { expiresIn: '120s' },
+      secret: `${process.env.AT_SECRET}`,
+      signOptions: { expiresIn: '4h' },
     }),
   ],
   controllers: [AuthController],

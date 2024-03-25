@@ -30,6 +30,7 @@
 
 - Project được đầu tư cực kì nghiêm túc vì thất nghiệp đã lâu, cần nâng cấp bản thân
 
-# DEVLOGS:
+## DEVLOGS:
 
-- [25/03/2024]: Đã hoàn thiện cơ chế authentication với AccessToken và Refresh Token với passport, vẫn chưa hoàn thiện cơ chế guard role (authorization)
+- [25/03/2024]: Đã hoàn thiện cơ chế authentication với AccessToken và RefreshToken với passport, vẫn chưa hoàn thiện cơ chế guard role (authorization)
+- [25/03/2024 - 22h30]: Đã hoàn thiện guard role, đang phát triển file upload multer
