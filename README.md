@@ -26,38 +26,10 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
-
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
 ## Project Backend về quản lý bán hàng
 
 - Project được đầu tư cực kì nghiêm túc vì thất nghiệp đã lâu, cần nâng cấp bản thân
+
+# DEVLOGS:
+
+- [25/03/2024]: Đã hoàn thiện cơ chế authentication với AccessToken và Refresh Token với passport, vẫn chưa hoàn thiện cơ chế guard role (authorization)
