@@ -15,4 +15,7 @@ export class CreateEmployeeResponseDto {
 
   @ApiProperty()
   image: string;
+
+  @ApiProperty()
+  dateOfBirth: Date;
 }

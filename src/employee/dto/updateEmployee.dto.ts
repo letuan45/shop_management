@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsEmail, IsNumberString, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsEmail,
+  IsNumberString,
+  IsString,
+} from 'class-validator';
 
 export class UpdateEmployeeDto {
   @ApiProperty()
@@ -27,7 +33,14 @@ export class UpdateEmployeeDto {
   @ApiProperty()
   @IsBoolean()
   @Transform(({ value }) => {
-    return Boolean(value);
+    return value === 'true';
   })
   isWorking: boolean;
+
+  @ApiProperty()
+  @Transform(({ value }) => {
+    return new Date(value);
+  })
+  @IsDate()
+  dateOfBirth: Date;
 }

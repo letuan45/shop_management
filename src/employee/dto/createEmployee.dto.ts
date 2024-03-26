@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNumberString, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsDate, IsEmail, IsNumberString, IsString } from 'class-validator';
 
 export class CreateEmployeeDto {
   @ApiProperty()
@@ -22,4 +23,11 @@ export class CreateEmployeeDto {
 
   @ApiProperty({ type: 'string', format: 'binary', required: true })
   file: Express.Multer.File;
+
+  @ApiProperty()
+  @Transform(({ value }) => {
+    return new Date(value);
+  })
+  @IsDate()
+  dateOfBirth: Date;
 }

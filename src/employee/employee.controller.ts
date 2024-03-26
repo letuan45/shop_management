@@ -22,7 +22,6 @@ import { CreateEmployeeResponseDto } from './dto/createEmployeeResponse.dto';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
-import { ParseFormDataJsonPipe } from 'src/common/pipes/parse-form-data.pipe';
 
 @ApiTags('Employee')
 @Controller('employee')
@@ -31,12 +30,12 @@ export class EmployeeController {
 
   @Post('create')
   @ApiResponse({ type: CreateEmployeeResponseDto })
-  @UseGuards(AtAuthGuard, AdminRoleGuard)
+  // @UseGuards(AtAuthGuard, AdminRoleGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads',
+        destination: './uploads/employees',
         filename: (req, file, cb) => {
           const name = file.originalname.split('.')[0];
           const fileExtenson = file.originalname.split('.')[1];
@@ -58,12 +57,12 @@ export class EmployeeController {
     @Body(ValidationPipe) createEmployeeDto: CreateEmployeeDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    this.employeeService.create(createEmployeeDto, file);
+    return await this.employeeService.create(createEmployeeDto, file);
   }
 
   @Get('image/:filename')
   async getImage(@Param('filename') filename: string, @Res() res: Response) {
-    res.sendFile(filename, { root: './uploads' });
+    res.sendFile(filename, { root: './uploads/employees' });
   }
 
   @Put('update/:employeeId')
@@ -71,7 +70,7 @@ export class EmployeeController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads',
+        destination: './uploads/employees',
         filename: (req, file, cb) => {
           const name = file.originalname.split('.')[0];
           const fileExtenson = file.originalname.split('.')[1];
@@ -94,7 +93,10 @@ export class EmployeeController {
     @Body(ValidationPipe) updateEmployeeDto: UpdateEmployeeDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    console.log(file);
-    return 'ok bro';
+    return await this.employeeService.update(
+      employeeId,
+      updateEmployeeDto,
+      file,
+    );
   }
 }
