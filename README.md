@@ -34,3 +34,4 @@
 
 - [25/03/2024]: Đã hoàn thiện cơ chế authentication với AccessToken và RefreshToken với passport, vẫn chưa hoàn thiện cơ chế guard role (authorization)
 - [25/03/2024 - 22h30]: Đã hoàn thiện guard role, đang phát triển file upload multer
+- [26/03/2024]: Hoàn thiện upload file, pagination
