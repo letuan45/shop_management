@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -22,11 +23,24 @@ import { CreateEmployeeResponseDto } from './dto/createEmployeeResponse.dto';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
+import { EmployeeQueryParamsDto } from './dto/paramDto';
 
 @ApiTags('Employee')
 @Controller('employee')
 export class EmployeeController {
   constructor(private employeeService: EmployeeService) {}
+
+  @Get('')
+  async getEmployees(@Query() params: EmployeeQueryParamsDto) {
+    const page = params.page ? +params.page : 1;
+    return await this.employeeService.getEmployees(page, params.search);
+  }
+
+  @Get(':employeeId')
+  @ApiResponse({ type: CreateEmployeeResponseDto })
+  async getEmployee(@Param('employeeId', ParseIntPipe) employeeId: number) {
+    return this.employeeService.getEmployee(employeeId);
+  }
 
   @Post('create')
   @ApiResponse({ type: CreateEmployeeResponseDto })
