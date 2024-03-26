@@ -6,16 +6,20 @@ import { CreateEmployeeDto } from './dto/createEmployee.dto';
 export class EmployeeService {
   constructor(private employeeRepository: EmployeeRepository) {}
 
-  allowedMimetype = ['image/jpeg', 'image/jpg', 'image/webp', 'image/png'];
-
   async create(
     createEmployeeDto: CreateEmployeeDto,
     image: Express.Multer.File,
   ) {
-    if (!this.allowedMimetype.includes(image.mimetype)) {
-      throw new BadRequestException('Only image file is allowed!');
+    if (!image) {
+      throw new BadRequestException('Only image file is alowed!');
     }
-    console.log(image);
-    return 'ok bro';
+    const filePath = `${process.env.BASE_URL}/employee/image/${image.filename}`;
+    return await this.employeeRepository.create(
+      createEmployeeDto.fullName,
+      createEmployeeDto.phone,
+      createEmployeeDto.email,
+      createEmployeeDto.address,
+      filePath,
+    );
   }
 }

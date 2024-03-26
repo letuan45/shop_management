@@ -14,14 +14,15 @@ datasource db {
 }
 
 model Employee {
-  id        Int     @id @default(autoincrement())
-  fullName  String
-  phone     String  @unique
-  email     String  @unique
-  isWorking Boolean @default(true)
-  address   String
-  image     String
-  user      User?
+  id          Int      @id @default(autoincrement())
+  fullName    String
+  phone       String   @unique
+  email       String   @unique
+  isWorking   Boolean  @default(true)
+  dateOfBirth DateTime
+  address     String
+  image       String
+  user        User?
 }
 
 model User {
