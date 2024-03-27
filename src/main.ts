@@ -8,6 +8,7 @@ import { ParseFormDataJsonPipe } from './common/pipes/parse-form-data.pipe';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+
   const config = new DocumentBuilder()
     .setTitle('Shop Management APIs')
     .setDescription('List of APIs use for Shop Management app')
@@ -16,9 +17,13 @@ async function bootstrap() {
     .addTag('User')
     .addTag('Employee')
     .addBearerAuth()
+    .addServer('api/v1')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger/api', app, document);
+
+  SwaggerModule.setup('api', app, document);
+  app.setGlobalPrefix('api/v1');
 
   await app.listen(8080);
 }

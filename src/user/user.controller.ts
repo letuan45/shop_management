@@ -19,7 +19,7 @@ export class UserController {
 
   //TODO: Bổ sung Guard Authorization admin
   @Post('/register')
-  @UseGuards(AtAuthGuard)
+  // @UseGuards(AtAuthGuard)
   @ApiBearerAuth()
   @ApiResponse({ type: CreateUserDto })
   async create(
