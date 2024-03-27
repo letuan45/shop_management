@@ -5,6 +5,8 @@ import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { EmployeeRepository } from 'src/employee/employee.repository';
 import { RoleRepository } from 'src/role/role.repository';
+import { JwtService } from '@nestjs/jwt';
+import { EmailService } from 'src/email/email.service';
 
 @Module({
   providers: [
@@ -13,6 +15,8 @@ import { RoleRepository } from 'src/role/role.repository';
     UserRepository,
     EmployeeRepository,
     RoleRepository,
+    JwtService,
+    EmailService,
   ],
   controllers: [UserController],
   exports: [UserService],

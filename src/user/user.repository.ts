@@ -22,7 +22,7 @@ export class UserRepository {
   }
 
   async getByUsername(username: string) {
-    return await this.prisma.user.findUnique({ where: { username } });
+    return await this.prisma.user.findUnique({ where: { username: username } });
   }
 
   async getById(userId: number) {
@@ -31,5 +31,30 @@ export class UserRepository {
 
   async getByEmployeeId(employeeId: number) {
     return await this.prisma.user.findUnique({ where: { employeeId } });
+  }
+
+  async updatePasswordByUsername(username: string, password: string) {
+    return await this.prisma.user.update({
+      where: { username },
+      data: { password },
+    });
+  }
+
+  async changeUserResetPwToken(userId: number, token: string) {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        resetPwToken: token,
+      },
+    });
+  }
+
+  async removeUserResetPwToken(userId: number) {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        resetPwToken: null,
+      },
+    });
   }
 }

@@ -5,7 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
 import { ConfigModule } from '@nestjs/config';
-
+import { EmailModule } from './email/email.module';
 @Module({
   imports: [
     PrismaModule,
@@ -14,6 +14,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     RoleModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    EmailModule,
   ],
 })
 export class AppModule {}

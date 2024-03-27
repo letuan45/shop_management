@@ -17,13 +17,13 @@ async function bootstrap() {
     .addTag('User')
     .addTag('Employee')
     .addBearerAuth()
-    .addServer('api/v1')
+    .addServer(process.env.API_BASE_PREFIX)
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, document);
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix(process.env.API_BASE_PREFIX);
 
   await app.listen(8080);
 }
