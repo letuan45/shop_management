@@ -36,3 +36,4 @@
 - [25/03/2024 - 22h30]: Đã hoàn thiện guard role, đang phát triển file upload multer
 - [26/03/2024]: Hoàn thiện upload file, pagination
 - [27/03/2024]: Hoàn thiện cơ chế reset password thông qua mailer, cơ chế sử dụng web token lưu vào db và xác thực
+- [28/03/2024]: Ngưng code - nghiên cứu chuyển đổi sang kiến trúc microservice

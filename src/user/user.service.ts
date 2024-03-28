@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserDto } from './dto/user.dto';
-import { compare, hash } from 'bcrypt';
+import { hash } from 'bcrypt';
 import { EmployeeRepository } from 'src/employee/employee.repository';
 import { RoleRepository } from 'src/role/role.repository';
 import { JwtService } from '@nestjs/jwt';
