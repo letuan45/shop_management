@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import express from 'express';
-import { ParseFormDataJsonPipe } from './common/pipes/parse-form-data.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
