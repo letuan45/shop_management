@@ -7,10 +7,12 @@ import { EmployeeRepository } from 'src/employee/employee.repository';
 import { RoleRepository } from 'src/role/role.repository';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from 'src/email/email.service';
+import { CartRepository } from 'src/cart/cart.repository';
 
 @Module({
   providers: [
     UserService,
+    CartRepository,
     PrismaService,
     UserRepository,
     EmployeeRepository,

@@ -22,7 +22,10 @@ export class UserRepository {
   }
 
   async getByUsername(username: string) {
-    return await this.prisma.user.findUnique({ where: { username: username } });
+    return await this.prisma.user.findUnique({
+      where: { username: username },
+      include: { cart: true },
+    });
   }
 
   async getById(userId: number) {

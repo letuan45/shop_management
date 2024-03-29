@@ -37,3 +37,4 @@
 - [26/03/2024]: Hoàn thiện upload file, pagination
 - [27/03/2024]: Hoàn thiện cơ chế reset password thông qua mailer, cơ chế sử dụng web token lưu vào db và xác thực
 - [28/03/2024]: Ngưng code - nghiên cứu chuyển đổi sang kiến trúc microservice
+- [29/03/2024]: Repo này trở thành main service (API getway)

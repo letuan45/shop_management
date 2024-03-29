@@ -42,6 +42,7 @@ export class AuthController {
       isActive: reqPayload.user.isActive,
       roleId: reqPayload.user.roleId,
       employeeId: reqPayload.user.employeeId,
+      cartItems: reqPayload.user.cartItems,
     };
   }
 }

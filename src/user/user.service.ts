@@ -14,12 +14,15 @@ import { RoleRepository } from 'src/role/role.repository';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from 'src/email/email.service';
 import { ResetPasswordDto } from './dto/reset-pass.dto';
+import { CartService } from 'src/cart/cart.service';
+import { CartRepository } from 'src/cart/cart.repository';
 
 @Injectable()
 export class UserService {
   constructor(
     private userRepository: UserRepository,
     private employeeRepository: EmployeeRepository,
+    private cartRepository: CartRepository,
     private roleRepository: RoleRepository,
     private jwtService: JwtService,
     private emailService: EmailService,
@@ -51,11 +54,14 @@ export class UserService {
     }
 
     createUserDto.password = await hash(createUserDto.password, 10);
-    return await this.userRepository.create(
+    const newUser = await this.userRepository.create(
       createUserDto,
       existEmployee.id,
       role.id,
     );
+    await this.cartRepository.create(newUser.id);
+
+    return await this.userRepository.getById(newUser.id);
   }
 
   async getByUsername(username: string) {
@@ -80,8 +86,6 @@ export class UserService {
 
     // Passed all verify logic, generate token
     const salt = Math.random().toString(36).substring(7);
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    const newExpiration = currentTimestamp + 600;
     const resetToken = this.jwtService.sign(
       { ...resetPassDto, salt },
       {

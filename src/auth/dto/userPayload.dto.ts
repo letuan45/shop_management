@@ -4,4 +4,5 @@ export class UserPayload {
   isActive: boolean;
   employeeId: number;
   roleId: number;
+  cartItems: [];
 }

@@ -36,10 +36,26 @@ model User {
   employeeId   Int      @unique
   role         Role     @relation(fields: [roleId], references: [id])
   roleId       Int
+  cart         Cart?
 }
 
 model Role {
   id   Int    @id @default(autoincrement())
   name String @unique
   user User[]
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    Int        @unique
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        Int  @id @default(autoincrement())
+  cart      Cart @relation(fields: [cartId], references: [id])
+  cartId    Int
+  productId Int
+  quantity  Int
 }

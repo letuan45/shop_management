@@ -50,8 +50,13 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     } else if (await compare(password, user.password)) {
+      const cartItems = await this.prisma.cartItem.findMany({
+        where: {
+          cartId: user.cart.id,
+        },
+      });
       const { password, ...result } = user;
-      return result;
+      return { ...result, cartItems };
     }
 
     return null;
