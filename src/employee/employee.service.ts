@@ -93,7 +93,7 @@ export class EmployeeService {
       throw new NotFoundException('Không tìm thấy nhân viên!');
     }
 
-    let updateImage;
+    let updateImage = '';
     if (image) {
       const filenameArr = employee.image.split('/');
       const filename = filenameArr[filenameArr.length - 1];

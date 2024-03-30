@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { CartModule } from './cart/cart.module';
 import { ProductModule } from './product/product.module';
+import { CategoryModule } from './category/category.module';
 @Module({
   imports: [
     PrismaModule,
@@ -19,6 +20,7 @@ import { ProductModule } from './product/product.module';
     EmailModule,
     CartModule,
     ProductModule,
+    CategoryModule,
   ],
 })
 export class AppModule {}
