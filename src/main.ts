@@ -18,6 +18,7 @@ async function bootstrap() {
     .addTag('Category')
     .addTag('Product')
     .addTag('Cart')
+    .addTag('Supplier')
     .addBearerAuth()
     .addServer(process.env.API_BASE_PREFIX)
     .build();

@@ -13,7 +13,7 @@ import { CartService } from './cart.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 
-@ApiTags('cart')
+@ApiTags('Cart')
 @Controller('cart')
 export class CartController {
   constructor(private cartSesvice: CartService) {}
