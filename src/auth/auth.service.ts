@@ -44,7 +44,7 @@ export class AuthService {
     return { message: 'Đăng xuất thành công' };
   }
 
-  async validateUser(username: string, password: string) {
+  async validateUser(username: string, password: string): Promise<UserPayload> {
     const user = await this.userService.getByUsername(username);
 
     if (!user) {
