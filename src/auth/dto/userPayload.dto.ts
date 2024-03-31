@@ -5,4 +5,5 @@ export class UserPayload {
   employeeId: number;
   roleId: number;
   cartItems: [];
+  cartId: number;
 }

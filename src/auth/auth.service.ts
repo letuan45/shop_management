@@ -56,7 +56,7 @@ export class AuthService {
         },
       });
       const { password, ...result } = user;
-      return { ...result, cartItems };
+      return { ...result, cartItems, cartId: user.cart.id };
     }
 
     return null;

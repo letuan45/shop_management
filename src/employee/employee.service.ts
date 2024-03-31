@@ -56,7 +56,7 @@ export class EmployeeService {
       await this.deleteFile(image.path);
       throw new BadRequestException('Only image file is alowed!');
     }
-    const filePath = `${process.env.BASE_URL}/employee/image/${image.filename}`;
+    const filePath = `${process.env.BASE_URL}/${process.env.API_BASE_PREFIX}/employee/image/${image.filename}`;
     const dateOfBirth = new Date(createEmployeeDto.dateOfBirth);
 
     if (await this.employeeRepository.getByEmail(createEmployeeDto.email)) {
@@ -98,7 +98,8 @@ export class EmployeeService {
       const filenameArr = employee.image.split('/');
       const filename = filenameArr[filenameArr.length - 1];
       await this.deleteFile(`./uploads/employees/${filename}`);
-      updateImage = `${process.env.BASE_URL}/employee/image/${image.filename}`;
+
+      updateImage = `${process.env.BASE_URL}/${process.env.API_BASE_PREFIX}/employee/image/${image.filename}`;
     } else {
       updateImage = employee.image;
     }

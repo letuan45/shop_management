@@ -43,6 +43,7 @@ export class AuthController {
       roleId: reqPayload.user.roleId,
       employeeId: reqPayload.user.employeeId,
       cartItems: reqPayload.user.cartItems,
+      cartId: reqPayload.user.cartId,
     };
   }
 }

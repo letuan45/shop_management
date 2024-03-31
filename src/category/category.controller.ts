@@ -43,7 +43,7 @@ export class CategoryController {
       );
   }
 
-  @Put('update:cateId')
+  @Put('update/:cateId')
   @ApiBody({ type: CreateCategoryDto })
   @ApiResponse({ type: CreateCategoryResponseDto })
   async update(
@@ -55,7 +55,7 @@ export class CategoryController {
       .pipe(timeout(5000));
   }
 
-  @Delete('delete:cateId')
+  @Delete('delete/:cateId')
   async delete(@Param('cateId', ParseIntPipe) cateId: number) {
     return this.rabbitClient.send({ cmd: 'delete_cate' }, { id: cateId }).pipe(
       catchError((error) => {

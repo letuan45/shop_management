@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Res,
   UploadedFile,
   UseInterceptors,
   ValidationPipe,
@@ -20,6 +21,7 @@ import { ProductService } from './product.service';
 import { ProductQueryParamDto } from './dtos/productQueryParam.dto';
 import { UpdateProductDto } from './dtos/updateProduct.dto';
 import { UpdateProductResponseDto } from './dtos/updateProductRes.dto';
+import { Response } from 'express';
 
 @ApiTags('Product')
 @Controller('product')
@@ -31,6 +33,12 @@ export class ProductController {
     queryParams.page = queryParams.page ? +queryParams.page : 1;
 
     return this.productService.get(queryParams);
+  }
+
+  @Get('image/:filename')
+  async getImage(@Param('filename') filename: string, @Res() res: Response) {
+    console.log('chạy');
+    res.sendFile(filename, { root: './uploads/products' });
   }
 
   @Get(':productId')
@@ -70,7 +78,7 @@ export class ProductController {
     return await this.productService.create(createProductDto, file);
   }
 
-  @Put('update:productId')
+  @Put('update/:productId')
   @ApiResponse({ type: UpdateProductResponseDto })
   // @UseGuards(AtAuthGuard, AdminRoleGuard)
   @ApiConsumes('multipart/form-data')

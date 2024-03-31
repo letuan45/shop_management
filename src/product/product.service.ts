@@ -13,7 +13,10 @@ export class ProductService {
   constructor(@Inject('PRODUCTS_SERVICE') private rabbitClient: ClientProxy) {}
 
   async get(queryParams: ProductQueryParamDto) {
-    return this.rabbitClient.send({ cmd: 'get_product' }, queryParams);
+    const product = await lastValueFrom(
+      this.rabbitClient.send({ cmd: 'get_product' }, queryParams),
+    );
+    return product;
   }
 
   async getProduct(productId: number) {
@@ -43,7 +46,7 @@ export class ProductService {
       throw new ConflictException('Giá nhập không thể cao hơn giá bán');
     }
 
-    const filePath = `${process.env.BASE_URL}/product/image/${image.filename}`;
+    const filePath = `${process.env.BASE_URL}/${process.env.API_BASE_PREFIX}/product/image/${image.filename}`;
 
     const data = {
       name: createProductDto.name,
@@ -99,7 +102,7 @@ export class ProductService {
       const filename = filenameArr[filenameArr.length - 1];
       await this.deleteFile(`./uploads/products/${filename}`);
 
-      updateImage = `${process.env.BASE_URL}/product/image/${image.filename}`;
+      updateImage = `${process.env.BASE_URL}/${process.env.API_BASE_PREFIX}/product/image/${image.filename}`;
     } else {
       updateImage = product.image;
     }
