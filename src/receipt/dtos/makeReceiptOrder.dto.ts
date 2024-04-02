@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsNumber } from 'class-validator';
 
-class ReceiptOrderItem {
+export class ReceiptOrderItem {
   @ApiProperty()
   @IsNumber()
   @Transform(({ value }) => +value)

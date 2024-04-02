@@ -1,10 +1,13 @@
 import { catchError, lastValueFrom, throwError } from 'rxjs';
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { MakeReceiptOrderDto } from './dtos/makeReceiptOrder.dto';
+import {
+  MakeReceiptOrderDto,
+  ReceiptOrderItem,
+} from './dtos/makeReceiptOrder.dto';
 import {
   MakeReceiptOrderTransferDto,
-  ReceiptOrderItem,
+  ReceiptOrderTransferItem,
 } from './dtos/makeReceiptOrderT.dto';
 
 @Injectable()
@@ -31,20 +34,24 @@ export class ReceiptService {
                 }),
               ),
           );
+          if (orderItem.quantity <= 0) {
+            throw new ConflictException('Dữ liệu đơn hàng không hợp lệ!');
+          }
+
           return {
             id: product.id,
-            price: product.exportPrice,
+            price: product.importPrice,
             quantity: orderItem.quantity,
           };
         } catch (error) {
-          console.error('Error retrieving product:', error);
-          return null;
+          const message = error?.message ?? 'Error retrieving product';
+          throw new ConflictException(message);
         }
       }),
     );
 
     const productsToAdd = products.filter((product) => product !== null);
-    const transferProducts: ReceiptOrderItem[] = productsToAdd.map(
+    const transferProducts: ReceiptOrderTransferItem[] = productsToAdd.map(
       (product) => ({
         productId: product.id,
         quantity: product.quantity,
@@ -57,6 +64,82 @@ export class ReceiptService {
       transferProducts,
     );
 
-    return transferObj;
+    return this.rabbitOrderClient
+      .send({ cmd: 'make_receipt_order' }, transferObj)
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
+  async addItemToOrder(orderId: number, receiptOrderItem: ReceiptOrderItem) {
+    const product = await lastValueFrom(
+      this.rabbitProductClient
+        .send({ cmd: 'get_product_by_id' }, { id: receiptOrderItem.productId })
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
+
+    const transferObj = {
+      orderId,
+      productId: receiptOrderItem.productId,
+      quantity: receiptOrderItem.quantity,
+      price: product.importPrice,
+    };
+
+    return this.rabbitOrderClient
+      .send({ cmd: 'add_receipt_order_item' }, transferObj)
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
+  async plusOneQtyOrderDetail(orderDetailId: number) {
+    return this.rabbitOrderClient
+      .send({ cmd: 'plus_one_qty_order_detail' }, { orderDetailId })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
+  async minusOneQtyOrderDetail(orderDetailId: number) {
+    return this.rabbitOrderClient
+      .send({ cmd: 'minus_one_qty_order_detail' }, { orderDetailId })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
+  async updateOrderDetailQuantity(orderDetailId: number, quantity: number) {
+    if (quantity <= 0) {
+      throw new ConflictException('Số lượng không hợp lệ!');
+    }
+    return this.rabbitOrderClient
+      .send({ cmd: 'update_order_detail_qty' }, { orderDetailId, quantity })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
+  async deleteOrderDetail(orderDetailId: number) {
+    return this.rabbitOrderClient
+      .send({ cmd: 'delete_order_detail' }, { orderDetailId })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
   }
 }

@@ -1,4 +1,4 @@
-export class ReceiptOrderItem {
+export class ReceiptOrderTransferItem {
   productId: number;
   quantity: number;
   price: number;
@@ -8,7 +8,7 @@ export class MakeReceiptOrderTransferDto {
   constructor(
     employeeId: number,
     supplierId: number,
-    receiptOrderItems: ReceiptOrderItem[],
+    receiptOrderItems: ReceiptOrderTransferItem[],
   ) {
     this.employeeId = employeeId;
     this.supplierId = supplierId;
@@ -17,5 +17,5 @@ export class MakeReceiptOrderTransferDto {
 
   employeeId: number;
   supplierId: number;
-  receiptOrderItems: ReceiptOrderItem[];
+  receiptOrderItems: ReceiptOrderTransferItem[];
 }

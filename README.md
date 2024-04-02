@@ -39,3 +39,4 @@
 - [28/03/2024]: Ngưng code - nghiên cứu chuyển đổi sang kiến trúc microservice
 - [29/03/2024]: Repo này trở thành main service (API getway)
 - [30/03/2024]: Đã setup xong cơ chế liên lạc với microservice thông qua RabbitMQ message broker, bắt exception từ service, hoàn tất quản lý Product
+- [02/04/2024]: Đã hoàn tất setup 3 service (1 API getway, 2 microservice), đang trong quá trình hoàn thiện khâu quy trình nhập hàng (khá khoai)
