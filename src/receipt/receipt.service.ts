@@ -9,6 +9,7 @@ import {
   MakeReceiptOrderTransferDto,
   ReceiptOrderTransferItem,
 } from './dtos/makeReceiptOrderT.dto';
+import { ReceiptQueryParamsDto } from './dtos/paramDto';
 
 @Injectable()
 export class ReceiptService {
@@ -16,6 +17,24 @@ export class ReceiptService {
     @Inject('RECEIPTS_SERVICE') private rabbitOrderClient: ClientProxy,
     @Inject('PRODUCTS_SERVICE') private rabbitProductClient: ClientProxy,
   ) {}
+
+  async getOrders(params: ReceiptQueryParamsDto) {
+    return this.rabbitOrderClient.send({ cmd: 'get_receipt_orders' }, params);
+  }
+
+  async getBills(params: ReceiptQueryParamsDto) {
+    return this.rabbitOrderClient.send({ cmd: 'get_receipt_bills' }, params);
+  }
+
+  async getOrderById(id: number) {
+    return this.rabbitOrderClient
+      .send({ cmd: 'get_receipt_order_by_id' }, { id })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
 
   async makeReceipt(
     employeeId: number,
@@ -136,6 +155,26 @@ export class ReceiptService {
   async deleteOrderDetail(orderDetailId: number) {
     return this.rabbitOrderClient
       .send({ cmd: 'delete_order_detail' }, { orderDetailId })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
+  async cancelOrder(orderId: number) {
+    return this.rabbitOrderClient
+      .send({ cmd: 'cancel_receipt_order' }, { orderId })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
+  async makeBill(userId: number, orderId: number) {
+    return this.rabbitOrderClient
+      .send({ cmd: 'make_receipt_bill' }, { userId, orderId })
       .pipe(
         catchError((error) => {
           return throwError(() => new RpcException(error.response));

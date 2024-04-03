@@ -28,7 +28,7 @@
 
 ## Project Backend về quản lý bán hàng
 
-- Project được đầu tư cực kì nghiêm túc vì thất nghiệp đã lâu, cần nâng cấp bản thân
+- Project được đầu tư cực kì nghiêm túc
 
 ## DEVLOGS:
 
@@ -40,3 +40,4 @@
 - [29/03/2024]: Repo này trở thành main service (API getway)
 - [30/03/2024]: Đã setup xong cơ chế liên lạc với microservice thông qua RabbitMQ message broker, bắt exception từ service, hoàn tất quản lý Product
 - [02/04/2024]: Đã hoàn tất setup 3 service (1 API getway, 2 microservice), đang trong quá trình hoàn thiện khâu quy trình nhập hàng (khá khoai)
+- [03/04/2024]: Hoàn tất khâu nhập hàng

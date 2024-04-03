@@ -18,7 +18,7 @@ export class EmployeeService {
     private employeeRepository: EmployeeRepository,
     private prisma: PrismaService,
   ) {}
-  private pageLimit = 4;
+  private pageLimit = 10;
 
   async getEmployees(page: number, search?: string) {
     const skip = this.pageLimit * (page - 1);

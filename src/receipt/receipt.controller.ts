@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
   Post,
   Put,
@@ -17,11 +19,29 @@ import {
   ReceiptOrderItem,
 } from './dtos/makeReceiptOrder.dto';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
+import { ReceiptQueryParamsDto } from './dtos/paramDto';
 
 @ApiTags('Receipt')
 @Controller('receipt')
 export class ReceiptController {
   constructor(private receiptService: ReceiptService) {}
+
+  @Get('order')
+  async getOrders(@Query() params: ReceiptQueryParamsDto) {
+    params.page = params.page ? +params.page : 1;
+    return await this.receiptService.getOrders(params);
+  }
+
+  @Get('bill')
+  async getBill(@Query() params: ReceiptQueryParamsDto) {
+    params.page = params.page ? +params.page : 1;
+    return await this.receiptService.getBills(params);
+  }
+
+  @Get('order/:orderId')
+  async getOrderById(@Param('orderId', ParseIntPipe) orderId: number) {
+    return await this.receiptService.getOrderById(orderId);
+  }
 
   @Post('order')
   @UseGuards(AtAuthGuard)
@@ -70,10 +90,26 @@ export class ReceiptController {
     );
   }
 
-  @Delete('order/delete')
+  @Delete('order/delete-item')
   async deleteOrderDetail(
     @Query('orderDetailId', ParseIntPipe) orderDetailId: number,
   ) {
     return await this.receiptService.deleteOrderDetail(orderDetailId);
+  }
+
+  @Put('order/cancel')
+  async cancelOrder(@Query('orderId', ParseIntPipe) orderId: number) {
+    return await this.receiptService.cancelOrder(orderId);
+  }
+
+  @Post('bill/make-bill')
+  @UseGuards(AtAuthGuard)
+  @ApiBearerAuth()
+  async makeBill(
+    @Query('orderId', ParseIntPipe) orderId: number,
+    @Request() req: Express.Request,
+  ) {
+    const userId = req.user['id'];
+    return await this.receiptService.makeBill(userId, orderId);
   }
 }
