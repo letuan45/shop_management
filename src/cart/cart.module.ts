@@ -23,5 +23,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   ],
   providers: [CartService, PrismaService, CartRepository],
   controllers: [CartController],
+  exports: [CartService, CartRepository],
 })
 export class CartModule {}

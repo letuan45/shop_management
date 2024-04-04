@@ -26,6 +26,16 @@ export class ReceiptService {
     return this.rabbitOrderClient.send({ cmd: 'get_receipt_bills' }, params);
   }
 
+  async getBillById(id: number) {
+    return this.rabbitOrderClient
+      .send({ cmd: 'get_receipt_bill_by_id' }, { id })
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
+  }
+
   async getOrderById(id: number) {
     return this.rabbitOrderClient
       .send({ cmd: 'get_receipt_order_by_id' }, { id })
@@ -173,12 +183,35 @@ export class ReceiptService {
   }
 
   async makeBill(userId: number, orderId: number) {
-    return this.rabbitOrderClient
-      .send({ cmd: 'make_receipt_bill' }, { userId, orderId })
-      .pipe(
-        catchError((error) => {
-          return throwError(() => new RpcException(error.response));
-        }),
-      );
+    const receiptBill = await lastValueFrom(
+      this.rabbitOrderClient
+        .send({ cmd: 'make_receipt_bill' }, { userId, orderId })
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
+
+    // Increase products stock
+    const receiptBillDetails = receiptBill?.receiptBillDetails;
+    await Promise.all(
+      receiptBillDetails.map(async (detail: any) => {
+        return await lastValueFrom(
+          this.rabbitProductClient
+            .send(
+              { cmd: 'increase_stock' },
+              { id: detail.productId, quantity: detail.quantity },
+            )
+            .pipe(
+              catchError((error) => {
+                return throwError(() => new RpcException(error.response));
+              }),
+            ),
+        );
+      }),
+    );
+
+    return receiptBill;
   }
 }

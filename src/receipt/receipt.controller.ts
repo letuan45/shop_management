@@ -38,6 +38,11 @@ export class ReceiptController {
     return await this.receiptService.getBills(params);
   }
 
+  @Get('bill/:billId')
+  async getBillDetail(@Param() billId: number) {
+    return await this.receiptService.getBillById(billId);
+  }
+
   @Get('order/:orderId')
   async getOrderById(@Param('orderId', ParseIntPipe) orderId: number) {
     return await this.receiptService.getOrderById(orderId);
@@ -50,9 +55,12 @@ export class ReceiptController {
     @Body(ValidationPipe) makeReceiptOrderDto: MakeReceiptOrderDto,
     @Request() req: Express.Request,
   ) {
-    const userId = req.user['id'];
+    const employeeId = req.user['employeeId'];
 
-    return await this.receiptService.makeReceipt(userId, makeReceiptOrderDto);
+    return await this.receiptService.makeReceipt(
+      employeeId,
+      makeReceiptOrderDto,
+    );
   }
 
   @Post('order/add-item')
@@ -109,7 +117,7 @@ export class ReceiptController {
     @Query('orderId', ParseIntPipe) orderId: number,
     @Request() req: Express.Request,
   ) {
-    const userId = req.user['id'];
-    return await this.receiptService.makeBill(userId, orderId);
+    const employeeId = req.user['employeeId'];
+    return await this.receiptService.makeBill(employeeId, orderId);
   }
 }

@@ -5,6 +5,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class CartRepository {
   constructor(private prisma: PrismaService) {}
 
+  async getById(id: number) {
+    return await this.prisma.cart.findUnique({
+      where: { id },
+      include: { cartItems: true },
+    });
+  }
+
   async getCartItemById(id: number) {
     return await this.prisma.cartItem.findUnique({ where: { id } });
   }

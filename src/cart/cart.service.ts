@@ -15,6 +15,10 @@ export class CartService {
     @Inject('PRODUCTS_SERVICE') private rabbitClient: ClientProxy,
   ) {}
 
+  async getCart(id: number) {
+    return await this.cartRepository.getById(id);
+  }
+
   async createCartItem(cartId: number, productId: number, quantity: number) {
     // Exception for product not found
     const product = await lastValueFrom(

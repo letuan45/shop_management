@@ -14,7 +14,6 @@ import { RoleRepository } from 'src/role/role.repository';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from 'src/email/email.service';
 import { ResetPasswordDto } from './dto/reset-pass.dto';
-import { CartService } from 'src/cart/cart.service';
 import { CartRepository } from 'src/cart/cart.repository';
 
 @Injectable()

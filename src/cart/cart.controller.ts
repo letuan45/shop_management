@@ -1,6 +1,7 @@
 import {
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Post,
@@ -16,7 +17,15 @@ import { AtAuthGuard } from 'src/auth/guards/at.guard';
 @ApiTags('Cart')
 @Controller('cart')
 export class CartController {
-  constructor(private cartSesvice: CartService) {}
+  constructor(private cartService: CartService) {}
+
+  @Get()
+  @UseGuards(AtAuthGuard)
+  @ApiBearerAuth()
+  async getUserCart(@Request() req: Express.Request) {
+    const cartId = req.user['cartId'];
+    return await this.cartService.getCart(cartId);
+  }
 
   @Post('add-to-cart')
   @UseGuards(AtAuthGuard)
@@ -27,7 +36,7 @@ export class CartController {
     @Request() req: Express.Request,
   ) {
     const userCartId = req.user['cartId'];
-    return await this.cartSesvice.createCartItem(
+    return await this.cartService.createCartItem(
       userCartId,
       productId,
       quantity,
@@ -42,7 +51,7 @@ export class CartController {
     @Request() req: Express.Request,
   ) {
     const userCartId = req.user['cartId'];
-    return await this.cartSesvice.plusOneCartItem(userCartId, productId);
+    return await this.cartService.plusOneCartItem(userCartId, productId);
   }
 
   @Put('minus-one')
@@ -53,7 +62,7 @@ export class CartController {
     @Request() req: Express.Request,
   ) {
     const userCartId = req.user['cartId'];
-    return await this.cartSesvice.minusOneCartItem(userCartId, productId);
+    return await this.cartService.minusOneCartItem(userCartId, productId);
   }
 
   @Put('update-quantity')
@@ -65,7 +74,7 @@ export class CartController {
     @Request() req: Express.Request,
   ) {
     const userCartId = req.user['cartId'];
-    return await this.cartSesvice.updateCartItemQuantity(
+    return await this.cartService.updateCartItemQuantity(
       userCartId,
       productId,
       quantity,
@@ -76,6 +85,6 @@ export class CartController {
   @UseGuards(AtAuthGuard)
   @ApiBearerAuth()
   async removeCartItem(@Param('cartItemId', ParseIntPipe) cartItemId: number) {
-    return await this.cartSesvice.deleteCartItem(cartItemId);
+    return await this.cartService.deleteCartItem(cartItemId);
   }
 }

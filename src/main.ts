@@ -21,6 +21,7 @@ async function bootstrap() {
     .addTag('Supplier')
     .addTag('Receipt')
     .addTag('Customer')
+    .addTag('Selling')
     .addBearerAuth()
     .addServer(process.env.API_BASE_PREFIX)
     .build();

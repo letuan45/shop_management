@@ -12,6 +12,7 @@ import { CategoryModule } from './category/category.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { ReceiptModule } from './receipt/receipt.module';
 import { CustomerModule } from './customer/customer.module';
+import { SellingModule } from './selling/selling.module';
 @Module({
   imports: [
     PrismaModule,
@@ -27,6 +28,7 @@ import { CustomerModule } from './customer/customer.module';
     SupplierModule,
     ReceiptModule,
     CustomerModule,
+    SellingModule,
   ],
 })
 export class AppModule {}
