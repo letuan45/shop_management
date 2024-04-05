@@ -41,3 +41,4 @@
 - [30/03/2024]: Đã setup xong cơ chế liên lạc với microservice thông qua RabbitMQ message broker, bắt exception từ service, hoàn tất quản lý Product
 - [02/04/2024]: Đã hoàn tất setup 3 service (1 API getway, 2 microservice), đang trong quá trình hoàn thiện khâu quy trình nhập hàng (khá khoai)
 - [03/04/2024]: Hoàn tất khâu nhập hàng
+- [05/04/2024]: Hoàn tất khâu bán hàng, đã xử lý trừ tồn kho, thay đổi dạng thái, tích điểm discount customer, tạo các chi tiết đơn hàng.
