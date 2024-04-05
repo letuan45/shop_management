@@ -12,7 +12,12 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SellingService } from './selling.service';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 import { SellingOrderItem } from './dtos/sellingOrder.dto';
@@ -37,14 +42,24 @@ export class SellingController {
   @Post('create')
   @UseGuards(AtAuthGuard)
   @ApiBearerAuth()
+  @ApiQuery({ name: 'customerId', required: false })
   async makeOrder(
     @Request() req: Express.Request,
-    @Query('customerId', ParseIntPipe) customerId: number,
+    @Query('customerId') customerId?: number,
   ) {
     const employeeId = req.user['employeeId'];
     const cartId = req.user['cartId'];
 
-    return this.sellingService.makeOrder(employeeId, cartId, customerId);
+    return await this.sellingService.makeOrder(employeeId, cartId, customerId);
+  }
+
+  @Put('order/change-customer')
+  @ApiQuery({ name: 'customerId', required: false })
+  async changeOrderCustomer(
+    @Query('orderId', ParseIntPipe) orderId: number,
+    @Query('customerId') customerId?: number,
+  ) {
+    return await this.sellingService.changeCustomer(orderId, customerId);
   }
 
   @Post('order/add-item')
@@ -90,5 +105,22 @@ export class SellingController {
   @Put('order/cancel')
   async cancelOrder(@Query('orderId', ParseIntPipe) orderId: number) {
     return await this.sellingService.cancelOrder(orderId);
+  }
+
+  @UseGuards(AtAuthGuard)
+  @ApiBearerAuth()
+  @Post('bill/make-bill')
+  async makeBill(
+    @Query('orderId', ParseIntPipe) orderId: number,
+    @Query('customerPayment', ParseIntPipe) customerPayment: number,
+    @Request() req: Express.Request,
+  ) {
+    const employeeId = req.user['employeeId'];
+
+    return await this.sellingService.makeBill(
+      employeeId,
+      orderId,
+      customerPayment,
+    );
   }
 }

@@ -34,10 +34,14 @@ export class SellingService {
       );
   }
 
-  async makeOrder(employeeId: number, cartId: number, customerId: number) {
+  async makeOrder(employeeId: number, cartId: number, customerId?: number) {
     // Get user's cart
     const cart = await this.cartService.getCart(cartId);
     const cartItems = cart.cartItems;
+    if (cartItems.length === 0) {
+      throw new ConflictException('Giỏ hàng đang trống!');
+    }
+
     // Check product
     const products = await Promise.all(
       cartItems.map(async (cartItem) => {
@@ -75,8 +79,8 @@ export class SellingService {
     );
     const transferObj = new MakeSellingOrderTransferDto(
       employeeId,
-      customerId,
       transferProducts,
+      customerId ?? null,
     );
     const order = await lastValueFrom(
       this.rabbitOrderClient
@@ -87,15 +91,27 @@ export class SellingService {
           }),
         ),
     );
-
     // Clear cart
     await Promise.all(
       cartItems.map(async (cartItem) => {
         return await this.cartService.deleteCartItem(cartItem.id);
       }),
     );
-
     return order;
+  }
+
+  async changeCustomer(orderId: number, customerId?: number | null) {
+    let customerIdToTransfer = customerId ?? 0;
+    return this.rabbitOrderClient
+      .send(
+        { cmd: 'change_selling_order_customer' },
+        { customerId: customerIdToTransfer, orderId },
+      )
+      .pipe(
+        catchError((error) => {
+          return throwError(() => new RpcException(error.response));
+        }),
+      );
   }
 
   async addOrderDetail(orderId: number, sellingOrderItem: SellingOrderItem) {
@@ -176,5 +192,47 @@ export class SellingService {
           return throwError(() => new RpcException(error.response));
         }),
       );
+  }
+
+  async makeBill(employeeId: number, orderId: number, customerPayment: number) {
+    // Minus stock
+    const order = await lastValueFrom(
+      this.rabbitOrderClient
+        .send({ cmd: 'get_selling_order' }, { orderId })
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
+    const productAndQtyPairs = order['sellingOrderDetails'].map(
+      (item: any) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      }),
+    );
+    await lastValueFrom(
+      this.rabbitProductClient
+        .send({ cmd: 'minus_products_stock' }, { items: productAndQtyPairs })
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
+
+    // Make bill
+    return await lastValueFrom(
+      this.rabbitOrderClient
+        .send(
+          { cmd: 'make_selling_bill' },
+          { employeeId, orderId, customerPayment },
+        )
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
   }
 }

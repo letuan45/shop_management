@@ -7,15 +7,15 @@ export class SellingOrderTransferItem {
 export class MakeSellingOrderTransferDto {
   constructor(
     employeeId: number,
-    customerId: number,
     sellingOrderItems: SellingOrderTransferItem[],
+    customerId?: number,
   ) {
     this.employeeId = employeeId;
-    this.customerId = customerId;
     this.sellingOrderItems = sellingOrderItems;
+    this.customerId = customerId ?? null;
   }
 
   employeeId: number;
-  customerId: number;
+  customerId: number | null;
   sellingOrderItems: SellingOrderTransferItem[];
 }
