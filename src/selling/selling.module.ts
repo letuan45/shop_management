@@ -4,6 +4,7 @@ import { SellingService } from './selling.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { CartService } from 'src/cart/cart.service';
 import { CartModule } from 'src/cart/cart.module';
+import { EmployeeModule } from 'src/employee/employee.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CartModule } from 'src/cart/cart.module';
       },
     ]),
     CartModule,
+    EmployeeModule,
   ],
   controllers: [SellingController],
   providers: [SellingService, CartService],

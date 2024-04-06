@@ -39,7 +39,7 @@ export class ReceiptController {
   }
 
   @Get('bill/:billId')
-  async getBillDetail(@Param() billId: number) {
+  async getBillDetail(@Param('billId', ParseIntPipe) billId: number) {
     return await this.receiptService.getBillById(billId);
   }
 

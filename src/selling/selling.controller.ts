@@ -12,12 +12,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SellingService } from './selling.service';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 import { SellingOrderItem } from './dtos/sellingOrder.dto';
@@ -37,6 +32,17 @@ export class SellingController {
   @Get('order/:orderId')
   async getOrder(@Param('orderId', ParseIntPipe) orderId: number) {
     return await this.sellingService.getOrder(orderId);
+  }
+
+  @Get('bill')
+  async getBillds(@Query() queryParam: SellingQueryParamsDto) {
+    queryParam.page = queryParam.page ? +queryParam.page : 1;
+    return await this.sellingService.getBills(queryParam);
+  }
+
+  @Get('bill/:billId')
+  async getBill(@Param('billId', ParseIntPipe) billId: number) {
+    return await this.sellingService.getBill(billId);
   }
 
   @Post('create')

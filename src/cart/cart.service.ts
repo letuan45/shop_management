@@ -16,7 +16,22 @@ export class CartService {
   ) {}
 
   async getCart(id: number) {
-    return await this.cartRepository.getById(id);
+    const cart = await this.cartRepository.getById(id);
+    const cartData = await Promise.all(
+      cart.cartItems.map(async (item) => {
+        const product = await lastValueFrom(
+          this.rabbitClient
+            .send({ cmd: 'get_product_by_id' }, { id: item.productId })
+            .pipe(
+              catchError((error) => {
+                return throwError(() => new RpcException(error.response));
+              }),
+            ),
+        );
+        return { ...item, product };
+      }),
+    );
+    return { ...cart, cartItems: cartData };
   }
 
   async createCartItem(cartId: number, productId: number, quantity: number) {

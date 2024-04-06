@@ -1,4 +1,4 @@
-import { catchError, lastValueFrom, throwError } from 'rxjs';
+import { async, catchError, lastValueFrom, throwError } from 'rxjs';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import {
@@ -10,40 +10,112 @@ import {
   ReceiptOrderTransferItem,
 } from './dtos/makeReceiptOrderT.dto';
 import { ReceiptQueryParamsDto } from './dtos/paramDto';
+import { EmployeeService } from 'src/employee/employee.service';
 
 @Injectable()
 export class ReceiptService {
   constructor(
+    private employeeService: EmployeeService,
     @Inject('RECEIPTS_SERVICE') private rabbitOrderClient: ClientProxy,
     @Inject('PRODUCTS_SERVICE') private rabbitProductClient: ClientProxy,
   ) {}
 
   async getOrders(params: ReceiptQueryParamsDto) {
-    return this.rabbitOrderClient.send({ cmd: 'get_receipt_orders' }, params);
+    const result = await lastValueFrom(
+      this.rabbitOrderClient.send({ cmd: 'get_receipt_orders' }, params),
+    );
+    const data = await Promise.all(
+      result['data'].map(async (item: any) => {
+        const employee = await this.employeeService.getEmployee(
+          item['employeeId'],
+        );
+        return { ...item, employee };
+      }),
+    );
+    return {
+      ...result,
+      data,
+    };
   }
 
   async getBills(params: ReceiptQueryParamsDto) {
-    return this.rabbitOrderClient.send({ cmd: 'get_receipt_bills' }, params);
+    const result = await lastValueFrom(
+      this.rabbitOrderClient.send({ cmd: 'get_receipt_bills' }, params),
+    );
+    const data = await Promise.all(
+      result['data'].map(async (item: any) => {
+        const employee = await this.employeeService.getEmployee(
+          item['employeeId'],
+        );
+        return { ...item, employee };
+      }),
+    );
+    return {
+      ...result,
+      data,
+    };
   }
 
   async getBillById(id: number) {
-    return this.rabbitOrderClient
-      .send({ cmd: 'get_receipt_bill_by_id' }, { id })
-      .pipe(
-        catchError((error) => {
-          return throwError(() => new RpcException(error.response));
-        }),
-      );
+    let billData = await lastValueFrom(
+      this.rabbitOrderClient
+        .send({ cmd: 'get_receipt_bill_by_id' }, { id })
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
+    const employee = await this.employeeService.getEmployee(
+      billData['employeeId'],
+    );
+    billData = { ...billData, employee };
+    const billDetails = await Promise.all(
+      billData.receiptBillDetails.map(async (detailItem: any) => {
+        const product = await lastValueFrom(
+          this.rabbitProductClient
+            .send({ cmd: 'get_product_by_id' }, { id: detailItem.productId })
+            .pipe(
+              catchError((error) => {
+                return throwError(() => new RpcException(error.response));
+              }),
+            ),
+        );
+        return { ...detailItem, product };
+      }),
+    );
+    return { ...billData, receiptBillDetails: billDetails };
   }
 
   async getOrderById(id: number) {
-    return this.rabbitOrderClient
-      .send({ cmd: 'get_receipt_order_by_id' }, { id })
-      .pipe(
-        catchError((error) => {
-          return throwError(() => new RpcException(error.response));
-        }),
-      );
+    let orderData = await lastValueFrom(
+      this.rabbitOrderClient
+        .send({ cmd: 'get_receipt_order_by_id' }, { id })
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
+    const employee = await this.employeeService.getEmployee(
+      orderData['employeeId'],
+    );
+    orderData = { ...orderData, employee };
+    const orderDetails = await Promise.all(
+      orderData['ReceiptOrderDetail'].map(async (detailItem: any) => {
+        const product = await lastValueFrom(
+          this.rabbitProductClient
+            .send({ cmd: 'get_product_by_id' }, { id: detailItem.productId })
+            .pipe(
+              catchError((error) => {
+                return throwError(() => new RpcException(error.response));
+              }),
+            ),
+        );
+        return { ...detailItem, product };
+      }),
+    );
+    return { ...orderData, ReceiptOrderDetail: orderDetails };
   }
 
   async makeReceipt(

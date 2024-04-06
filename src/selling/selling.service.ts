@@ -8,30 +8,111 @@ import {
 import { CartService } from 'src/cart/cart.service';
 import { SellingOrderItem } from './dtos/sellingOrder.dto';
 import { SellingQueryParamsDto } from './dtos/paramDto';
+import { EmployeeService } from 'src/employee/employee.service';
 
 @Injectable()
 export class SellingService {
   constructor(
     private cartService: CartService,
+    private employeeService: EmployeeService,
     @Inject('RECEIPTS_SERVICE') private rabbitOrderClient: ClientProxy,
     @Inject('PRODUCTS_SERVICE') private rabbitProductClient: ClientProxy,
   ) {}
 
   async getOrders(queryParam: SellingQueryParamsDto) {
-    return this.rabbitOrderClient.send(
-      { cmd: 'get_selling_orders' },
-      queryParam,
+    const result = await lastValueFrom(
+      this.rabbitOrderClient.send({ cmd: 'get_selling_orders' }, queryParam),
     );
+    const data = await Promise.all(
+      result['data'].map(async (item: any) => {
+        const employee = await this.employeeService.getEmployee(
+          item['employeeId'],
+        );
+        return { ...item, employee };
+      }),
+    );
+    return {
+      ...result,
+      data,
+    };
+  }
+
+  async getBills(queryParam: SellingQueryParamsDto) {
+    const result = await lastValueFrom(
+      this.rabbitOrderClient.send({ cmd: 'get_selling_bills' }, queryParam),
+    );
+    const data = await Promise.all(
+      result['data'].map(async (item: any) => {
+        const employee = await this.employeeService.getEmployee(
+          item['employeeId'],
+        );
+        return { ...item, employee };
+      }),
+    );
+    return {
+      ...result,
+      data,
+    };
   }
 
   async getOrder(orderId: number) {
-    return this.rabbitOrderClient
-      .send({ cmd: 'get_selling_order' }, { orderId })
-      .pipe(
+    let orderData = await lastValueFrom(
+      this.rabbitOrderClient
+        .send({ cmd: 'get_selling_order' }, { orderId })
+        .pipe(
+          catchError((error) => {
+            return throwError(() => new RpcException(error.response));
+          }),
+        ),
+    );
+    const employee = await this.employeeService.getEmployee(
+      orderData['employeeId'],
+    );
+    orderData = { ...orderData, employee };
+    const orderDetails = await Promise.all(
+      orderData['sellingOrderDetails'].map(async (detailItem: any) => {
+        const product = await lastValueFrom(
+          this.rabbitProductClient
+            .send({ cmd: 'get_product_by_id' }, { id: detailItem.productId })
+            .pipe(
+              catchError((error) => {
+                return throwError(() => new RpcException(error.response));
+              }),
+            ),
+        );
+        return { ...detailItem, product };
+      }),
+    );
+    return { ...orderData, sellingOrderDetails: orderDetails };
+  }
+
+  async getBill(billId: number) {
+    let billData = await lastValueFrom(
+      this.rabbitOrderClient.send({ cmd: 'get_selling_bill' }, { billId }).pipe(
         catchError((error) => {
           return throwError(() => new RpcException(error.response));
         }),
-      );
+      ),
+    );
+    const employee = await this.employeeService.getEmployee(
+      billData['employeeId'],
+    );
+    billData = { ...billData, employee };
+    const billDetails = await Promise.all(
+      billData['sellingBillDetails'].map(async (detailItem: any) => {
+        const product = await lastValueFrom(
+          this.rabbitProductClient
+            .send({ cmd: 'get_product_by_id' }, { id: detailItem.productId })
+            .pipe(
+              catchError((error) => {
+                return throwError(() => new RpcException(error.response));
+              }),
+            ),
+        );
+        return { ...detailItem, product };
+      }),
+    );
+    return { ...billData, sellingBillDetails: billDetails };
   }
 
   async makeOrder(employeeId: number, cartId: number, customerId?: number) {
