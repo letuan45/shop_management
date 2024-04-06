@@ -24,15 +24,15 @@
 
 ## Description: Project Backend về quản lý bán hàng
 
-- Project được đầu tư cực kì nghiêm túc
 - Database design: https://app.sqldbm.com/PostgreSQL/DatabaseExplorer/p293754
 
 ### Các chức năng của dự án
 
-- Quản trị bán hàng: Bán hàng, khách hàng (employee role). Quản trị nhân sự, account, sản phẩm, danh mục sản phẩm, giỏ hàng và thao tác giỏ hàng, nhà cung cấp, phiếu nhập, đơn nhập, đơn bán, hóa đơn, tích điểm, khuyến mãi.
+- Employee: Quản trị bán hàng: Bán hàng, khách hàng.
+- Admin: Quản trị nhân sự, account, sản phẩm, danh mục sản phẩm, giỏ hàng và thao tác giỏ hàng, nhà cung cấp, phiếu nhập, đơn nhập, đơn bán, hóa đơn, tích điểm, khuyến mãi.
 - Project theo thiết kế microservice: 1 API getway, 1 product service, 1 order service, các service liên lạc bằng RabbitMQ message broker
 
-### Technologies: NestJS, PosgresQL, Prisma, JWT NestJS Guard (Access Token, Refresh Token), Node Mailer, Multer, NestJS Microservice RabbitMQ, AMQP server, SWAGGER
+### Technologies: NestJS, PosgresQL, Prisma, JWT NestJS Guard Passport (Access Token, Refresh Token), Node Mailer, Multer, NestJS Microservice RabbitMQ, AMQP server, SWAGGER
 
 ## DEVLOGS:
 
@@ -46,4 +46,4 @@
 - [02/04/2024]: Đã hoàn tất setup 3 service (1 API getway, 2 microservice), đang trong quá trình hoàn thiện khâu quy trình nhập hàng (khá khoai)
 - [03/04/2024]: Hoàn tất khâu nhập hàng
 - [05/04/2024]: Hoàn tất khâu bán hàng, đã xử lý trừ tồn kho, thay đổi dạng thái, tích điểm discount customer, tạo các chi tiết đơn hàng.
-- [06/04/2024]: Hoàn thành toàn bộ. Kể từ timeline này, repo đến phase update và debug
+- [06/04/2024]: Hoàn thành toàn bộ. Kể từ timeline này, repo đi đến phase update và debug
