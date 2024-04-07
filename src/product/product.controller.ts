@@ -9,11 +9,17 @@ import {
   Query,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { CreateProductDto } from './dtos/createProduct.dto';
 import { CreateProductResponseDto } from './dtos/createProductRes.dto';
@@ -22,9 +28,13 @@ import { ProductQueryParamDto } from './dtos/productQueryParam.dto';
 import { UpdateProductDto } from './dtos/updateProduct.dto';
 import { UpdateProductResponseDto } from './dtos/updateProductRes.dto';
 import { Response } from 'express';
+import { AtAuthGuard } from 'src/auth/guards/at.guard';
+import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 
 @ApiTags('Product')
 @Controller('product')
+@UseGuards(AtAuthGuard, AdminRoleGuard)
+@ApiBearerAuth()
 export class ProductController {
   constructor(private productService: ProductService) {}
 

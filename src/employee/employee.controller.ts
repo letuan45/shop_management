@@ -14,7 +14,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
-import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -27,6 +32,8 @@ import { EmployeeQueryParamsDto } from './dto/paramDto';
 
 @ApiTags('Employee')
 @Controller('employee')
+@UseGuards(AtAuthGuard, AdminRoleGuard)
+@ApiBearerAuth()
 export class EmployeeController {
   constructor(private employeeService: EmployeeService) {}
 
@@ -44,7 +51,6 @@ export class EmployeeController {
 
   @Post('create')
   @ApiResponse({ type: CreateEmployeeResponseDto })
-  // @UseGuards(AtAuthGuard, AdminRoleGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {

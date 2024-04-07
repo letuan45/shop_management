@@ -20,6 +20,8 @@ import { SellingQueryParamsDto } from './dtos/paramDto';
 
 @ApiTags('Selling')
 @Controller('selling')
+@UseGuards(AtAuthGuard)
+@ApiBearerAuth()
 export class SellingController {
   constructor(private sellingService: SellingService) {}
 

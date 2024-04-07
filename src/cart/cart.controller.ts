@@ -16,6 +16,8 @@ import { AtAuthGuard } from 'src/auth/guards/at.guard';
 
 @ApiTags('Cart')
 @Controller('cart')
+@UseGuards(AtAuthGuard)
+@ApiBearerAuth()
 export class CartController {
   constructor(private cartService: CartService) {}
 

@@ -7,16 +7,21 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto } from './dtos/createSupplier.dto';
 import { UpdateSupplierDto } from './dtos/updateSupplier.dto';
 import { GetSupplierQueryDto } from './dtos/getSupplierQuery.dto';
+import { AtAuthGuard } from 'src/auth/guards/at.guard';
+import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 
 @ApiTags('Supplier')
 @Controller('supplier')
+@UseGuards(AtAuthGuard, AdminRoleGuard)
+@ApiBearerAuth()
 export class SupplierController {
   constructor(private supplierService: SupplierService) {}
 

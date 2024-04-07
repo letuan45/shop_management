@@ -20,9 +20,12 @@ import {
 } from './dtos/makeReceiptOrder.dto';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 import { ReceiptQueryParamsDto } from './dtos/paramDto';
+import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 
 @ApiTags('Receipt')
 @Controller('receipt')
+@UseGuards(AtAuthGuard, AdminRoleGuard)
+@ApiBearerAuth()
 export class ReceiptController {
   constructor(private receiptService: ReceiptService) {}
 

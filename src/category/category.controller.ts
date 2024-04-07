@@ -9,15 +9,20 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateCategoryDto } from './dtos/createCategory.dto';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError, throwError, timeout } from 'rxjs';
+import { AtAuthGuard } from 'src/auth/guards/at.guard';
+import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 
 @ApiTags('Category')
 @Controller('category')
+@UseGuards(AtAuthGuard, AdminRoleGuard)
+@ApiBearerAuth()
 export class CategoryController {
   constructor(
     @Inject('PRODUCTS_CATE_SERVICE') private rabbitClient: ClientProxy,

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { SupplierController } from './supplier.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
   ],
-  providers: [SupplierService],
+  providers: [SupplierService, PrismaService],
   controllers: [SupplierController],
 })
 export class SupplierModule {}
