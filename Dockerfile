@@ -1,10 +1,10 @@
 # BUILD
-
 FROM node:20-alpine as build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
+COPY ./prisma prisma
 
 RUN npm install
 
@@ -13,22 +13,17 @@ COPY . .
 RUN npm run build
 
 # PRODUCTION
-
 FROM node:20-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-COPY --from=build /usr/src/app/dist ./dist
+ENV NODE_ENV production
 
 COPY package*.json ./
-
+COPY --chown=node:node --from=build /app/prisma /app/prisma
+COPY --chown=node:node --from=build /app/dist  /app/dist
 RUN npm install --only=production
-
-RUN rm package*.json
 
 EXPOSE 8080
 
-CMD [ "node", "dist/main.js" ]
+CMD [  "npm", "run", "start:migrate:prod" ]

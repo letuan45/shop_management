@@ -2,7 +2,9 @@ version: '3'
 
 services:
   backend:
-    build: ./
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: shop_management_api_getway
     environment:
       - DATABASE_URL=postgresql://postgres:123456@database:5432/shop_management?schema=public
@@ -32,3 +34,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=shop_management
+
+  # prisma-generator:
+  #   build: ./
+  #   container_name: prisma_generator
+  #   volumes:
+  #     - ./path/to/prisma:/prisma
+  #   command: npx prisma generate

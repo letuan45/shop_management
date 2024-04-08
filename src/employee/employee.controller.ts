@@ -25,15 +25,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
 import { CreateEmployeeResponseDto } from './dto/createEmployeeResponse.dto';
-import { AtAuthGuard } from 'src/auth/guards/at.guard';
-import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
+// import { AtAuthGuard } from 'src/auth/guards/at.guard';
+// import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 import { EmployeeQueryParamsDto } from './dto/paramDto';
 
 @ApiTags('Employee')
 @Controller('employee')
-@UseGuards(AtAuthGuard, AdminRoleGuard)
-@ApiBearerAuth()
 export class EmployeeController {
   constructor(private employeeService: EmployeeService) {}
 
