@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: shop_management_api_getway
     environment:
-      - DATABASE_URL=postgresql://postgres:123456@database:5432/shop_management?schema=public
+      - DATABASE_URL=postgresql://postgres:lelamtuan@shop-management-instance.c7cs0m28m6l4.ap-southeast-2.rds.amazonaws.com:5432/shop_management_api_getway?schema=public
       - AT_SECRET=JuSHiHN+u2UDGTKwM82cblUh2Z7bBiAs
       - RT_SECRET=WsesiMfifQm5OKuXv4AtVNi3MR6AjubY
       - RESET_SECRET=TlqoBpBiZNbTYrSb
@@ -20,20 +20,20 @@ services:
       - AMQP_ORDER_URL=amqps://mlkmitde:gFMA_PMu_GnbzCGxrlmr2nGleqMzMSTm@octopus.rmq3.cloudamqp.com/mlkmitde
     ports:
       - '8080:8080'
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
 
-  database:
-    image: postgres
-    container_name: shop_management
-    ports:
-      - '5432:5432'
-    volumes:
-      - './postgres-data:/var/lib/postgresql/data'
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=shop_management
+  # database:
+  #   image: postgres
+  #   container_name: shop_management
+  #   ports:
+  #     - '5432:5432'
+  #   volumes:
+  #     - './postgres-data:/var/lib/postgresql/data'
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=123456
+  #     - POSTGRES_DB=shop_management
 
   # prisma-generator:
   #   build: ./
