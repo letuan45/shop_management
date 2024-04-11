@@ -2,9 +2,7 @@ version: '3'
 
 services:
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: letuan45/shop-management-backend
     container_name: shop_management_api_getway
     environment:
       - DATABASE_URL=postgresql://postgres:lelamtuan@shop-management-instance.c7cs0m28m6l4.ap-southeast-2.rds.amazonaws.com:5432/shop_management_api_getway?schema=public
@@ -13,13 +11,14 @@ services:
       - RESET_SECRET=TlqoBpBiZNbTYrSb
       - SENDER_EMAIL=ltpg2594gm@gmail.com
       - SENDER_PASSWORD="xvxe tsqn asag cpyh"
-      - BASE_URL=http://localhost:8080
+      - BASE_URL="3.27.63.149:8080"
       - FE_BASE_URL="http://localhost:3000"
       - API_BASE_PREFIX=api/v1
       - AMQP_PRODUCT_URL=amqps://iiyscote:OqxkEgQlzP46BNcT1uhrUAVCdg9gtFHT@armadillo.rmq.cloudamqp.com/iiyscote
       - AMQP_ORDER_URL=amqps://mlkmitde:gFMA_PMu_GnbzCGxrlmr2nGleqMzMSTm@octopus.rmq3.cloudamqp.com/mlkmitde
     ports:
       - '8080:8080'
+    restart: 'always'
     # depends_on:
     #   - database
 
