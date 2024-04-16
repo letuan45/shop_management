@@ -16,6 +16,7 @@ import {
 import { EmployeeService } from './employee.service';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiResponse,
   ApiTags,
@@ -47,9 +48,6 @@ export class EmployeeController {
     return this.employeeService.getEmployee(employeeId);
   }
 
-  @Post('create')
-  @ApiResponse({ type: CreateEmployeeResponseDto })
-  @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -71,6 +69,9 @@ export class EmployeeController {
       },
     }),
   )
+  @Post('create')
+  @ApiResponse({ type: CreateEmployeeResponseDto })
+  @ApiConsumes('multipart/form-data')
   async createEmployee(
     @Body(ValidationPipe) createEmployeeDto: CreateEmployeeDto,
     @UploadedFile() file: Express.Multer.File,

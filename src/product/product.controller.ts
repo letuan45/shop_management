@@ -58,7 +58,6 @@ export class ProductController {
 
   @Post('create')
   @ApiResponse({ type: CreateProductResponseDto })
-  // @UseGuards(AtAuthGuard, AdminRoleGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {

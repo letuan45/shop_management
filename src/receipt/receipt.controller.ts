@@ -12,7 +12,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ReceiptService } from './receipt.service';
 import {
   MakeReceiptOrderDto,
@@ -30,14 +30,40 @@ export class ReceiptController {
   constructor(private receiptService: ReceiptService) {}
 
   @Get('order')
-  async getOrders(@Query() params: ReceiptQueryParamsDto) {
-    params.page = params.page ? +params.page : 1;
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'fromDate', required: false, type: Date })
+  @ApiQuery({ name: 'toDate', required: false, type: Date })
+  async getOrders(
+    @Query('page') page?: number,
+    @Query('fromDate') fromDate?: Date,
+    @Query('toDate') toDate?: Date,
+  ) {
+    const actualPage = isNaN(page) ? 1 : page;
+    let params: ReceiptQueryParamsDto = { page: actualPage };
+    if (fromDate && toDate) {
+      params = { page: actualPage, fromDate, toDate };
+    } else if (fromDate) params = { page: actualPage, fromDate };
+    else if (toDate) params = { page: actualPage, toDate };
+
     return await this.receiptService.getOrders(params);
   }
 
   @Get('bill')
-  async getBill(@Query() params: ReceiptQueryParamsDto) {
-    params.page = params.page ? +params.page : 1;
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'fromDate', required: false, type: Date })
+  @ApiQuery({ name: 'toDate', required: false, type: Date })
+  async getBill(
+    @Query('page') page?: number,
+    @Query('fromDate') fromDate?: Date,
+    @Query('toDate') toDate?: Date,
+  ) {
+    const actualPage = isNaN(page) ? 1 : page;
+    let params: ReceiptQueryParamsDto = { page: actualPage };
+    if (fromDate && toDate) {
+      params = { page: actualPage, fromDate, toDate };
+    } else if (fromDate) params = { page: actualPage, fromDate };
+    else if (toDate) params = { page: actualPage, toDate };
+
     return await this.receiptService.getBills(params);
   }
 

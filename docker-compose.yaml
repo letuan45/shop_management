@@ -2,8 +2,12 @@ version: '3'
 
 services:
   backend:
-    image: letuan45/shop-management-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: shop_management_api_getway
+    volumes:
+      - ./uploads:/app/uploads
     environment:
       - DATABASE_URL=postgresql://postgres:lelamtuan@shop-management-instance.c7cs0m28m6l4.ap-southeast-2.rds.amazonaws.com:5432/shop_management_api_getway?schema=public
       - AT_SECRET=JuSHiHN+u2UDGTKwM82cblUh2Z7bBiAs
@@ -11,7 +15,7 @@ services:
       - RESET_SECRET=TlqoBpBiZNbTYrSb
       - SENDER_EMAIL=ltpg2594gm@gmail.com
       - SENDER_PASSWORD="xvxe tsqn asag cpyh"
-      - BASE_URL="3.27.63.149:8080"
+      - BASE_URL=http://3.27.63.149:8080
       - FE_BASE_URL="http://localhost:3000"
       - API_BASE_PREFIX=api/v1
       - AMQP_PRODUCT_URL=amqps://iiyscote:OqxkEgQlzP46BNcT1uhrUAVCdg9gtFHT@armadillo.rmq.cloudamqp.com/iiyscote
@@ -19,24 +23,3 @@ services:
     ports:
       - '8080:8080'
     restart: 'always'
-    # depends_on:
-    #   - database
-
-  # database:
-  #   image: postgres
-  #   container_name: shop_management
-  #   ports:
-  #     - '5432:5432'
-  #   volumes:
-  #     - './postgres-data:/var/lib/postgresql/data'
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=123456
-  #     - POSTGRES_DB=shop_management
-
-  # prisma-generator:
-  #   build: ./
-  #   container_name: prisma_generator
-  #   volumes:
-  #     - ./path/to/prisma:/prisma
-  #   command: npx prisma generate

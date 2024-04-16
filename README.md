@@ -47,3 +47,4 @@
 - [03/04/2024]: Hoàn tất khâu nhập hàng
 - [05/04/2024]: Hoàn tất khâu bán hàng, đã xử lý trừ tồn kho, thay đổi dạng thái, tích điểm discount customer, tạo các chi tiết đơn hàng.
 - [06/04/2024]: Hoàn thành toàn bộ. Kể từ timeline này, repo đi đến phase update và debug
+- [16/04/2024]: AMQP server bị lỗi không rõ nguyên nhân, có lẽ dịch vụ free nên dễ lỗi, đã thay thế bởi 2 server mới. Các flow pagination được thay đổi theo kiểu truy vấn khoảng ngày và theo role user

@@ -13,7 +13,7 @@ import { RtStrategy } from './strategies/rt.strategy';
     UserModule,
     JwtModule.register({
       secret: `${process.env.AT_SECRET}`,
-      signOptions: { expiresIn: '4h' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],

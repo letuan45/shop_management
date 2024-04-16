@@ -17,6 +17,7 @@ import { SellingService } from './selling.service';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 import { SellingOrderItem } from './dtos/sellingOrder.dto';
 import { SellingQueryParamsDto } from './dtos/paramDto';
+import { ReceiptQueryParamsDto } from 'src/receipt/dtos/paramDto';
 
 @ApiTags('Selling')
 @Controller('selling')
@@ -26,9 +27,30 @@ export class SellingController {
   constructor(private sellingService: SellingService) {}
 
   @Get('order')
-  async getOrders(@Query() queryParam: SellingQueryParamsDto) {
-    queryParam.page = queryParam.page ? +queryParam.page : 1;
-    return await this.sellingService.getOrders(queryParam);
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'fromDate', required: false, type: Date })
+  @ApiQuery({ name: 'toDate', required: false, type: Date })
+  async getOrders(
+    @Request() req: Express.Request,
+    @Query('page') page?: number,
+    @Query('fromDate') fromDate?: Date,
+    @Query('toDate') toDate?: Date,
+  ) {
+    const actualPage = isNaN(page) ? 1 : page;
+    let params: SellingQueryParamsDto = {
+      page: actualPage,
+    };
+    if (fromDate && toDate) {
+      params = { page: actualPage, fromDate, toDate };
+    } else if (fromDate) params = { page: actualPage, fromDate };
+    else if (toDate) params = { page: actualPage, toDate };
+
+    if (req.user['roleId'] === 1) {
+      const employeeId = req.user['employeeId'];
+      params = { ...params, employeeId };
+    }
+
+    return await this.sellingService.getOrders(params);
   }
 
   @Get('order/:orderId')
@@ -37,9 +59,28 @@ export class SellingController {
   }
 
   @Get('bill')
-  async getBillds(@Query() queryParam: SellingQueryParamsDto) {
-    queryParam.page = queryParam.page ? +queryParam.page : 1;
-    return await this.sellingService.getBills(queryParam);
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'fromDate', required: false, type: Date })
+  @ApiQuery({ name: 'toDate', required: false, type: Date })
+  async getBillds(
+    @Request() req: Express.Request,
+    @Query('page') page?: number,
+    @Query('fromDate') fromDate?: Date,
+    @Query('toDate') toDate?: Date,
+  ) {
+    const actualPage = isNaN(page) ? 1 : page;
+    let params: SellingQueryParamsDto = { page: actualPage };
+    if (fromDate && toDate) {
+      params = { page: actualPage, fromDate, toDate };
+    } else if (fromDate) params = { page: actualPage, fromDate };
+    else if (toDate) params = { page: actualPage, toDate };
+
+    if (req.user['roleId'] === 1) {
+      const employeeId = req.user['employeeId'];
+      params = { ...params, employeeId };
+    }
+
+    return await this.sellingService.getBills(params);
   }
 
   @Get('bill/:billId')

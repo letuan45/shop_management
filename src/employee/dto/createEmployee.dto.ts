@@ -21,7 +21,7 @@ export class CreateEmployeeDto {
   @IsString()
   address: string;
 
-  @ApiProperty({ type: 'string', format: 'binary', required: true })
+  @ApiProperty({ type: 'file', format: 'binary', required: true })
   file: Express.Multer.File;
 
   @ApiProperty()

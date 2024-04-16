@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/auth.dto';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
@@ -28,11 +37,9 @@ export class AuthController {
     return this.authService.refreshAccessToken(userPayload);
   }
 
-  @Get('logout')
-  @UseGuards(RtAuthGuard)
-  @ApiBearerAuth()
-  async logout(@Request() req) {
-    return this.authService.logout(req.user.id);
+  @Post('logout')
+  async logout(@Query('userId', ParseIntPipe) userId: number) {
+    return this.authService.logout(userId);
   }
 
   getPayload(reqPayload): UserPayload {
