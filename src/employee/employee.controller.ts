@@ -18,6 +18,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -37,9 +38,14 @@ export class EmployeeController {
   constructor(private employeeService: EmployeeService) {}
 
   @Get('')
-  async getEmployees(@Query() params: EmployeeQueryParamsDto) {
-    const page = params.page ? +params.page : 1;
-    return await this.employeeService.getEmployees(page, params.search);
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  async getEmployees(
+    @Query('page') page?: number,
+    @Query('search') search?: string,
+  ) {
+    const actualPage = page ? +page : 1;
+    return await this.employeeService.getEmployees(actualPage, search);
   }
 
   @Get(':employeeId')

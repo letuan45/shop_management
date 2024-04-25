@@ -88,7 +88,7 @@ export class SellingController {
     return await this.sellingService.getBill(billId);
   }
 
-  @Post('create')
+  @Post('order/create')
   @UseGuards(AtAuthGuard)
   @ApiBearerAuth()
   @ApiQuery({ name: 'customerId', required: false })

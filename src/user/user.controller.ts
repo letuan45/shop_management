@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -31,6 +33,11 @@ export class UserController {
   ) {
     await this.userService.createUser(createUserDto, employeeId, roleId);
     return { message: 'Tạo tài khoản cho nhân viên thành công' };
+  }
+
+  @Get(':userId')
+  async getAccountInfo(@Param('userId', ParseIntPipe) userId: number) {
+    return await this.userService.getAccountInfo(userId);
   }
 
   @Post('reset-password')

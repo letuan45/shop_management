@@ -11,9 +11,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateCustomerDto } from './dtos/createCustomer.dto';
-import { CustomerQueryParamsDto } from './dtos/paramDto';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 
 @ApiTags('Customer')
@@ -24,9 +23,18 @@ export class CustomerController {
   constructor(private customerService: CustomerService) {}
 
   @Get()
-  async get(@Query() queryParam: CustomerQueryParamsDto) {
-    queryParam.page = queryParam.page ? +queryParam.page : 1;
-    return await this.customerService.get(queryParam);
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  async get(@Query('page') page?: number, @Query('search') search?: string) {
+    const actualPage = page ? +page : 1;
+
+    let queryParams = {};
+    if (search) {
+      queryParams = { page: actualPage, search };
+    } else {
+      queryParams = { page: actualPage };
+    }
+    return await this.customerService.get(queryParams);
   }
 
   @Get(':customerId')

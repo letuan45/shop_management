@@ -17,6 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiConsumes,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -24,7 +25,6 @@ import { diskStorage } from 'multer';
 import { CreateProductDto } from './dtos/createProduct.dto';
 import { CreateProductResponseDto } from './dtos/createProductRes.dto';
 import { ProductService } from './product.service';
-import { ProductQueryParamDto } from './dtos/productQueryParam.dto';
 import { UpdateProductDto } from './dtos/updateProduct.dto';
 import { UpdateProductResponseDto } from './dtos/updateProductRes.dto';
 import { Response } from 'express';
@@ -33,30 +33,57 @@ import { AdminRoleGuard } from 'src/common/guards/admin-role.guard';
 
 @ApiTags('Product')
 @Controller('product')
-@UseGuards(AtAuthGuard, AdminRoleGuard)
-@ApiBearerAuth()
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  async getAll(@Query() queryParams: ProductQueryParamDto) {
-    queryParams.page = queryParams.page ? +queryParams.page : 1;
+  // @UseGuards(AtAuthGuard, AdminRoleGuard)
+  // @ApiBearerAuth()
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({ name: 'pageSize', required: false, type: String })
+  @ApiQuery({ name: 'isForSell', required: false, type: Boolean })
+  async getAll(
+    @Query('page') page?: number,
+    @Query('search') search?: string,
+    @Query('pageSize') pageSize?: number,
+    @Query('isForSell') isForSell?: boolean,
+  ) {
+    const actualPage = page ? +page : 1;
+
+    let queryParams = {};
+    if (search) {
+      queryParams = { page: actualPage, search };
+    } else {
+      queryParams = { page: actualPage };
+    }
+
+    if (pageSize) {
+      queryParams = { ...queryParams, pageSize };
+    }
+
+    if (isForSell) {
+      queryParams = { ...queryParams, isForSell };
+    }
 
     return this.productService.get(queryParams);
   }
 
   @Get('image/:filename')
   async getImage(@Param('filename') filename: string, @Res() res: Response) {
-    console.log('chạy');
     res.sendFile(filename, { root: './uploads/products' });
   }
 
   @Get(':productId')
+  @UseGuards(AtAuthGuard, AdminRoleGuard)
+  @ApiBearerAuth()
   async getProduct(@Param('productId', ParseIntPipe) productId: number) {
     return await this.productService.getProduct(productId);
   }
 
   @Post('create')
+  @UseGuards(AtAuthGuard, AdminRoleGuard)
+  @ApiBearerAuth()
   @ApiResponse({ type: CreateProductResponseDto })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
@@ -89,7 +116,8 @@ export class ProductController {
 
   @Put('update/:productId')
   @ApiResponse({ type: UpdateProductResponseDto })
-  // @UseGuards(AtAuthGuard, AdminRoleGuard)
+  @UseGuards(AtAuthGuard, AdminRoleGuard)
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {

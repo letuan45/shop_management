@@ -78,8 +78,6 @@ export class ReceiptController {
   }
 
   @Post('order')
-  @UseGuards(AtAuthGuard)
-  @ApiBearerAuth()
   async makeOrder(
     @Body(ValidationPipe) makeReceiptOrderDto: MakeReceiptOrderDto,
     @Request() req: Express.Request,

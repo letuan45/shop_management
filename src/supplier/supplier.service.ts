@@ -9,6 +9,10 @@ import { GetSupplierQueryDto } from './dtos/getSupplierQuery.dto';
 export class SupplierService {
   constructor(@Inject('SUPPLIERS_SERVICE') private rabbitClient: ClientProxy) {}
 
+  async getAll() {
+    return this.rabbitClient.send({ cmd: 'get_all_supplier' }, {});
+  }
+
   async get(queryParams: GetSupplierQueryDto) {
     const supplier = await lastValueFrom(
       this.rabbitClient.send({ cmd: 'get_supplier' }, queryParams),

@@ -29,7 +29,10 @@ export class UserRepository {
   }
 
   async getById(userId: number) {
-    return await this.prisma.user.findUnique({ where: { id: userId } });
+    return await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
   }
 
   async getByEmployeeId(employeeId: number) {

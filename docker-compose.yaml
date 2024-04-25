@@ -18,8 +18,8 @@ services:
       - BASE_URL=http://3.27.63.149:8080
       - FE_BASE_URL="http://localhost:3000"
       - API_BASE_PREFIX=api/v1
-      - AMQP_PRODUCT_URL=amqps://iiyscote:OqxkEgQlzP46BNcT1uhrUAVCdg9gtFHT@armadillo.rmq.cloudamqp.com/iiyscote
-      - AMQP_ORDER_URL=amqps://mlkmitde:gFMA_PMu_GnbzCGxrlmr2nGleqMzMSTm@octopus.rmq3.cloudamqp.com/mlkmitde
+      - AMQP_PRODUCT_URL=amqps://qahaacnd:n_MMhZWIfeGnc88PZl2dXUbXBouqSfBa@armadillo.rmq.cloudamqp.com/qahaacnd
+      - AMQP_ORDER_URL=amqps://lyhwedur:p0xoHlnGxtV0Z60p5mKpizY0Ow3QEZ36@armadillo.rmq.cloudamqp.com/lyhwedur
     ports:
       - '8080:8080'
     restart: 'always'

@@ -63,6 +63,12 @@ export class UserService {
     return await this.userRepository.getById(newUser.id);
   }
 
+  async getAccountInfo(userId: number) {
+    const user = await this.userRepository.getById(userId);
+    const { resetPwToken, refreshToken, password, ...returnData } = user;
+    return returnData;
+  }
+
   async getByUsername(username: string) {
     return await this.userRepository.getByUsername(username);
   }

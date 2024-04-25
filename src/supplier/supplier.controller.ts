@@ -10,7 +10,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto } from './dtos/createSupplier.dto';
 import { UpdateSupplierDto } from './dtos/updateSupplier.dto';
@@ -26,9 +26,23 @@ export class SupplierController {
   constructor(private supplierService: SupplierService) {}
 
   @Get()
-  async get(@Query() queryParams: GetSupplierQueryDto) {
-    queryParams.page = queryParams.page ? +queryParams.page : 1;
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  async get(@Query('page') page?: number, @Query('search') search?: string) {
+    const actualPage = page ? +page : 1;
+
+    let queryParams = {};
+    if (search) {
+      queryParams = { page: actualPage, search };
+    } else {
+      queryParams = { page: actualPage };
+    }
     return await this.supplierService.get(queryParams);
+  }
+
+  @Get('get-all')
+  async getAll() {
+    return await this.supplierService.getAll();
   }
 
   @Get(':supplierId')
