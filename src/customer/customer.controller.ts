@@ -22,6 +22,11 @@ import { AtAuthGuard } from 'src/auth/guards/at.guard';
 export class CustomerController {
   constructor(private customerService: CustomerService) {}
 
+  @Get('get-all')
+  async getAll() {
+    return await this.customerService.getAll();
+  }
+
   @Get()
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'search', required: false, type: String })

@@ -43,7 +43,7 @@ export class EmployeeRepository {
   }
 
   async getById(id: number) {
-    return await this.prisma.employee.findUnique({ where: { id } });
+    return await this.prisma.employee.findUnique({ where: { id }});
   }
 
   async getByPhone(phone: string) {

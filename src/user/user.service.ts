@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { EmailService } from 'src/email/email.service';
 import { ResetPasswordDto } from './dto/reset-pass.dto';
 import { CartRepository } from 'src/cart/cart.repository';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,10 @@ export class UserService {
     private jwtService: JwtService,
     private emailService: EmailService,
   ) {}
+
+  async getAllRoles() {
+    return await this.roleRepository.getAll();
+  }
 
   async createUser(
     createUserDto: CreateUserDto,
@@ -73,6 +78,24 @@ export class UserService {
     return await this.userRepository.getByUsername(username);
   }
 
+  async updateUser(userId: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.getById(userId);
+    if (!user) {
+      throw new NotFoundException('Không tìm thấy tài khoản!');
+    }
+    let password = user.password;
+    if (updateUserDto.isUpdatePwd) {
+      password = await hash(updateUserDto.password, 10);
+    }
+
+    return await this.userRepository.updateAccount(
+      userId,
+      password,
+      updateUserDto.roleId,
+      updateUserDto.isAcive,
+    );
+  }
+
   async resetPassword(resetPassDto: ResetPasswordVerifyDto) {
     const user = await this.userRepository.getByUsername(resetPassDto.username);
     const employee = await this.employeeRepository.getByEmail(
@@ -106,7 +129,7 @@ export class UserService {
       html: `<div>
         <h1>Xin chào nhân viên ${employee.fullName},</h1>
         <h4>Chúng tôi đã nhận được yêu cầu khôi phục tài khoản qua phần mềm của chúng tôi, đây là email tự động dành cho bạn, hãy thực hiện theo chỉ dẫn từng bước</h4>
-        <div>Truy cập đường dẫn sau để khôi phục mật khẩu: <a href="${process.env.FE_BASE_URL}/${process.env.API_BASE_PREFIX}/reset-password/${resetToken}">Đường dẫn đến trang khôi phục mật khẩu</a> </div>
+        <div>Truy cập đường dẫn sau để khôi phục mật khẩu: <a href="${process.env.FE_BASE_URL}/reset-password/${resetToken}">Đường dẫn đến trang khôi phục mật khẩu</a> </div>
         <p style="font-style: italic">Lưu ý: mã khôi phục chỉ có hiệu lực trong 10 phút</p>
       </div>`,
     };

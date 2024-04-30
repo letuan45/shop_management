@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UseGuards,
   ValidationPipe,
@@ -15,11 +16,17 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AtAuthGuard } from 'src/auth/guards/at.guard';
 import { ResetPasswordVerifyDto } from './dto/reset-pass-verify.dto';
 import { ResetPasswordDto } from './dto/reset-pass.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @Get('roles')
+  async getAllRoles() {
+    return await this.userService.getAllRoles();
+  }
 
   //TODO: Bổ sung Guard Authorization admin
   @Post('register')
@@ -38,6 +45,14 @@ export class UserController {
   @Get(':userId')
   async getAccountInfo(@Param('userId', ParseIntPipe) userId: number) {
     return await this.userService.getAccountInfo(userId);
+  }
+
+  @Put('update')
+  async updateAccount(
+    @Query('userId', ParseIntPipe) userId: number,
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+  ) {
+    return await this.userService.updateUser(userId, updateUserDto);
   }
 
   @Post('reset-password')

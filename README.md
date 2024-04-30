@@ -48,3 +48,4 @@
 - [05/04/2024]: Hoàn tất khâu bán hàng, đã xử lý trừ tồn kho, thay đổi dạng thái, tích điểm discount customer, tạo các chi tiết đơn hàng.
 - [06/04/2024]: Hoàn thành toàn bộ. Kể từ timeline này, repo đi đến phase update và debug
 - [16/04/2024]: AMQP server bị lỗi không rõ nguyên nhân, có lẽ dịch vụ free nên dễ lỗi, đã thay thế bởi 2 server mới. Các flow pagination được thay đổi theo kiểu truy vấn khoảng ngày và theo role user
+- [28/04/2024]: Hoàn thành project cả Font-end lẫn Back-end, tôi đã bị charge phí vì sử dụng AWS RDS một cách không thông minh, hiện tại các AWS VPC đã ngỏm. Đang phân tích phương hướng chạy docker image ở dịch vụ free khác.

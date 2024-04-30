@@ -39,6 +39,18 @@ export class UserRepository {
     return await this.prisma.user.findUnique({ where: { employeeId } });
   }
 
+  async updateAccount(
+    id: number,
+    password: string,
+    roleId: number,
+    isActive: boolean,
+  ) {
+    return await this.prisma.user.update({
+      where: { id },
+      data: { password, roleId, isActive },
+    });
+  }
+
   async updatePasswordByUsername(username: string, password: string) {
     return await this.prisma.user.update({
       where: { username },

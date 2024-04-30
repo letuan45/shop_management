@@ -37,6 +37,7 @@ export class EmployeeService {
       take: this.pageLimit,
       skip: skip,
       where: where,
+      include: { user: true },
       orderBy: { id: 'desc' },
     });
 

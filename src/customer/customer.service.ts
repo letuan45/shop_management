@@ -10,6 +10,10 @@ export class CustomerService {
     @Inject('CUSTOMERS_SERVICE') private rabbitCustomerClient: ClientProxy,
   ) {}
 
+  async getAll() {
+    return this.rabbitCustomerClient.send({ cmd: 'get_all_customer' }, {});
+  }
+
   async get(queryParam: CustomerQueryParamsDto) {
     return this.rabbitCustomerClient.send({ cmd: 'get_customers' }, queryParam);
   }
