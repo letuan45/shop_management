@@ -33,19 +33,3 @@
 - Project theo thiết kế microservice: 1 API getway, 1 product service, 1 order service, các service liên lạc bằng RabbitMQ message broker
 
 ### Technologies: NestJS, PosgresQL, Prisma, JWT NestJS Guard Passport (Access Token, Refresh Token), Node Mailer, Multer, NestJS Microservice RabbitMQ, AMQP server, SWAGGER
-
-## DEVLOGS:
-
-- [25/03/2024]: Đã hoàn thiện cơ chế authentication với AccessToken và RefreshToken với passport, vẫn chưa hoàn thiện cơ chế guard role (authorization)
-- [25/03/2024 - 22h30]: Đã hoàn thiện guard role, đang phát triển file upload multer
-- [26/03/2024]: Hoàn thiện upload file, pagination
-- [27/03/2024]: Hoàn thiện cơ chế reset password thông qua mailer, cơ chế sử dụng web token lưu vào db và xác thực
-- [28/03/2024]: Ngưng code - nghiên cứu chuyển đổi sang kiến trúc microservice
-- [29/03/2024]: Repo này trở thành main service (API getway)
-- [30/03/2024]: Đã setup xong cơ chế liên lạc với microservice thông qua RabbitMQ message broker, bắt exception từ service, hoàn tất quản lý Product
-- [02/04/2024]: Đã hoàn tất setup 3 service (1 API getway, 2 microservice), đang trong quá trình hoàn thiện khâu quy trình nhập hàng (khá khoai)
-- [03/04/2024]: Hoàn tất khâu nhập hàng
-- [05/04/2024]: Hoàn tất khâu bán hàng, đã xử lý trừ tồn kho, thay đổi dạng thái, tích điểm discount customer, tạo các chi tiết đơn hàng.
-- [06/04/2024]: Hoàn thành toàn bộ. Kể từ timeline này, repo đi đến phase update và debug
-- [16/04/2024]: AMQP server bị lỗi không rõ nguyên nhân, có lẽ dịch vụ free nên dễ lỗi, đã thay thế bởi 2 server mới. Các flow pagination được thay đổi theo kiểu truy vấn khoảng ngày và theo role user
-- [28/04/2024]: Hoàn thành project cả Font-end lẫn Back-end, tôi đã bị charge phí vì sử dụng AWS RDS một cách không thông minh, hiện tại các AWS VPC đã ngỏm. Đang phân tích phương hướng chạy docker image ở dịch vụ free khác.
